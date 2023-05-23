@@ -1,0 +1,36 @@
+# Dossiers
+.vs/
+bin/
+obj/
+
+# Fichiers
+*.sln
+*.csproj
+*.dll
+*.pdb
+*.userprefs
+*.log
+*.vsix
+*.cache
+*.DS_Store
+
+# Fichiers de sauvegarde Visual Studio
+**/*.bak
+**/*.bak2
+**/*.bak3
+**/*.bak4
+**/*.bak5
+**/*.bak6
+**/*.bak7
+**/*.bak8
+**/*.bak9
+
+# Fichiers de sauvegarde ReSharper
+**/_ReSharper.*/
+
+# Dossiers de packages NuGet
+**/packages/
+
+# Fichiers de cache NuGet
+*.nuget.props
+*.nuget.targets
