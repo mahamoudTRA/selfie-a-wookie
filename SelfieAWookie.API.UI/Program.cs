@@ -18,6 +18,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddInjection();
 builder.Services.AddCustomSecurity(builder.Configuration);
+builder.Services.AddCustomOptions(builder.Configuration);
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
 {

@@ -4,8 +4,10 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SelfieAWookie.API.UI.Application.Dtos;
+using SelfieAWookie.Core.Infrastructure.Configurations;
 
 namespace SelfieAWookie.API.UI.Controllers
 {
@@ -15,11 +17,13 @@ namespace SelfieAWookie.API.UI.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
+        private readonly SecurityOption _option;
 
-        public AuthenticateController(UserManager<IdentityUser> userManager, IConfiguration configuration) 
+        public AuthenticateController(UserManager<IdentityUser> userManager, IConfiguration configuration, IOptions<SecurityOption> options) 
         {
             _userManager = userManager;
             _configuration = configuration;
+            _option = options.Value;
         }
 
         [HttpPost("Register")]
@@ -76,7 +80,7 @@ namespace SelfieAWookie.API.UI.Controllers
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
             // We get our secret from the appsettings
-            var key = Encoding.UTF8.GetBytes(_configuration.GetSection("Jwt:Key").Value!);
+            var key = Encoding.UTF8.GetBytes(_option.Key!);
 
             // we define our token descriptor
             // We need to utilise claims which are properties in our token which gives information about the token
@@ -88,8 +92,8 @@ namespace SelfieAWookie.API.UI.Controllers
                 Subject = new ClaimsIdentity(new[]
                 {
                 new Claim("Id", user.Id),
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email!),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email!),
                 // the JTI is used for our refresh token which we will be convering in the next video
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             }),
