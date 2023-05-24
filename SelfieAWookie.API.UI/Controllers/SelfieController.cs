@@ -1,8 +1,10 @@
 ﻿using System;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SelfieAWookie.API.UI.Application.Dtos;
+using SelfieAWookie.API.UI.Application.Queries;
 using SelfieAWookie.Core.Domain.Models;
 using SelfieAWookie.Core.Domain.Repositories;
 
@@ -15,11 +17,13 @@ namespace SelfieAWookie.API.UI.Controllers
     {
         private readonly ISelfieRepository _selfieRepository;
         private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IMediator _mediator;
 
-        public SelfieController(ISelfieRepository selfieRepository, IWebHostEnvironment hostEnvironment)
+        public SelfieController(ISelfieRepository selfieRepository, IWebHostEnvironment hostEnvironment, IMediator mediator)
         {
             _selfieRepository = selfieRepository;
             _hostEnvironment = hostEnvironment;
+            _mediator = mediator;
         }
 
         [HttpPost("addOneSelfie")]
@@ -46,14 +50,16 @@ namespace SelfieAWookie.API.UI.Controllers
         [HttpGet("getAllSelfie")]
         public async Task<IActionResult> GetAll([FromQuery] int wookieId = 0)
         {
-            var query = await _selfieRepository.GetAll(wookieId);
+            //var query = await _selfieRepository.GetAll(wookieId);
 
-            var result = query.Select(x => new SelfieResumeDTO
+            /*var result = query.Select(x => new SelfieResumeDTO
             {
                 Title = x.Title,
                 Wookie = x.Wookie?.Name,
                 NombreSelfieFromWookie = (x.Wookie?.Selfies?.Count).GetValueOrDefault(0)
-            }).ToList();
+            }).ToList();*/
+
+            var result = await _mediator.Send(new SelectAllSelfieQuerie() { WookieId = wookieId });
 
 
             return Ok(result);
