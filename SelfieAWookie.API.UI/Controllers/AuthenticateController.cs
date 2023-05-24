@@ -26,8 +26,6 @@ namespace SelfieAWookie.API.UI.Controllers
             _configuration = configuration;
             _option = options.Value;
             _logger = logger;
-
-            _logger.LogDebug("Hello");
         }
 
         [HttpPost("Register")]

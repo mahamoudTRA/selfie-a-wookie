@@ -7,6 +7,7 @@ using SelfieAWookie.Core.Domain.Repositories;
 using SelfieAWookie.API.UI.ExtensionMethods;
 using Microsoft.AspNetCore.Identity;
 using SelfieAWookie.Core.Infrastructure.Loggers;
+using SelfieAWookie.API.UI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,7 +45,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Staging"))
 }
 
 
-
+app.UseMiddleware<LogRequestMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
