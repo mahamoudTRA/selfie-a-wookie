@@ -30,20 +30,6 @@ namespace SelfieAWookie.API.UI.Controllers
         [HttpPost("addOneSelfie")]
         public async Task<IActionResult> AddOneSelfie(SelfieDTO selfieDTO)
         {
-            /*IActionResult result = BadRequest();
-            Selfie selfieAdded = await _selfieRepository.AddOneSelfie(new Selfie()
-            {
-                Title = selfieDTO.Title,
-                ImagePath = selfieDTO.ImagePath,
-                WookieId = selfieDTO.WookieId
-            });
-
-            if(selfieAdded != null)
-            {
-                selfieDTO.Id = selfieAdded.Id;
-                result = Ok(selfieDTO);
-            }
-            */
             var addedSelfie = await _mediator.Send(new AddOneSelfieCommand() { Item = selfieDTO });
 
             return Ok(addedSelfie);
