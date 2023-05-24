@@ -22,7 +22,8 @@ namespace SelfieAWookie.API.UI.Application.Queries
             {
                 Title = x.Title,
                 NombreSelfieFromWookie = (x.Wookie?.Selfies?.Count).GetValueOrDefault(0),
-                Wookie = x.Wookie?.Name
+                Wookie = x.Wookie?.Name,
+                ImagePath = x.Picture!.Url
             }).ToList();
 
             return await Task.FromResult(result);

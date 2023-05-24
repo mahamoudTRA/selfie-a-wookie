@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SelfieAWookie.API.UI.Application.Commands;
 using SelfieAWookie.API.UI.Application.Dtos;
 using SelfieAWookie.API.UI.Application.Queries;
 using SelfieAWookie.Core.Domain.Models;
@@ -29,7 +30,7 @@ namespace SelfieAWookie.API.UI.Controllers
         [HttpPost("addOneSelfie")]
         public async Task<IActionResult> AddOneSelfie(SelfieDTO selfieDTO)
         {
-            IActionResult result = BadRequest();
+            /*IActionResult result = BadRequest();
             Selfie selfieAdded = await _selfieRepository.AddOneSelfie(new Selfie()
             {
                 Title = selfieDTO.Title,
@@ -42,9 +43,10 @@ namespace SelfieAWookie.API.UI.Controllers
                 selfieDTO.Id = selfieAdded.Id;
                 result = Ok(selfieDTO);
             }
+            */
+            var addedSelfie = await _mediator.Send(new AddOneSelfieCommand() { Item = selfieDTO });
 
-            
-            return Ok(selfieAdded);
+            return Ok(addedSelfie);
         }
 
         [HttpGet("getAllSelfie")]
