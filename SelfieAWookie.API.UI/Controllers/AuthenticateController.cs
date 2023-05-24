@@ -18,12 +18,16 @@ namespace SelfieAWookie.API.UI.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IConfiguration _configuration;
         private readonly SecurityOption _option;
+        private readonly ILogger<AuthenticateController> _logger;
 
-        public AuthenticateController(UserManager<IdentityUser> userManager, IConfiguration configuration, IOptions<SecurityOption> options) 
+        public AuthenticateController(UserManager<IdentityUser> userManager, IConfiguration configuration, IOptions<SecurityOption> options, ILogger<AuthenticateController> logger) 
         {
             _userManager = userManager;
             _configuration = configuration;
             _option = options.Value;
+            _logger = logger;
+
+            _logger.LogInformation("Hello Log");
         }
 
         [HttpPost("Register")]
@@ -52,21 +56,28 @@ namespace SelfieAWookie.API.UI.Controllers
         {
             IActionResult result = BadRequest();
 
-            var user = await _userManager.FindByEmailAsync(userDTO.Login!);
-
-            if(user != null)
+            try
             {
-                var verifUser = await _userManager.CheckPasswordAsync(user, userDTO.Password!);
+                var user = await _userManager.FindByEmailAsync(userDTO.Login!);
 
-                if(verifUser)
+                if (user != null)
                 {
-                    result = Ok(new AuthenticateUserDTO()
+                    var verifUser = await _userManager.CheckPasswordAsync(user, userDTO.Password!);
+
+                    if (verifUser)
                     {
-                        Name = user.UserName,
-                        Login = user.Email,
-                        Token = GenerateJwtToken(user)
-                    });
+                        result = Ok(new AuthenticateUserDTO()
+                        {
+                            Name = user.UserName,
+                            Login = user.Email,
+                            Token = GenerateJwtToken(user)
+                        });
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Une erreur s'est produite : {ex}", userDTO);
             }
 
             return result;
