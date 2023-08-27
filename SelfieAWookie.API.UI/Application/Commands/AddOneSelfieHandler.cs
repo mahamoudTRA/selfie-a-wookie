@@ -30,7 +30,7 @@ namespace SelfieAWookie.API.UI.Application.Commands
                 return await Task.FromResult(request.Item);
             }
 
-            throw new Exception();
+            throw new Exception("Impossible d'ajouter le selfie");
         }
     }
 }

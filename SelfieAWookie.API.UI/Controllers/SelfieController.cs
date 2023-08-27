@@ -19,20 +19,31 @@ namespace SelfieAWookie.API.UI.Controllers
         private readonly ISelfieRepository _selfieRepository;
         private readonly IWebHostEnvironment _hostEnvironment;
         private readonly IMediator _mediator;
+        private readonly ILogger<SelfieController> _logger;
 
-        public SelfieController(ISelfieRepository selfieRepository, IWebHostEnvironment hostEnvironment, IMediator mediator)
+        public SelfieController(ISelfieRepository selfieRepository, IWebHostEnvironment hostEnvironment, IMediator mediator, ILogger<SelfieController> logger)
         {
             _selfieRepository = selfieRepository;
             _hostEnvironment = hostEnvironment;
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpPost("addOneSelfie")]
         public async Task<IActionResult> AddOneSelfie(SelfieDTO selfieDTO)
         {
-            var addedSelfie = await _mediator.Send(new AddOneSelfieCommand() { Item = selfieDTO });
+            IActionResult result = BadRequest();
+            try
+            {
+                var addedSelfie = await _mediator.Send(new AddOneSelfieCommand() { Item = selfieDTO });
 
-            return Ok(addedSelfie);
+                result = Ok(addedSelfie);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Une erreur s'est produite {ex.Message}", selfieDTO);
+            }
+            return result;
         }
 
         [HttpGet("getAllSelfie")]
