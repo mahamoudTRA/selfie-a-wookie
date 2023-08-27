@@ -53,7 +53,7 @@ namespace SelfieAWookie.Core.Infrastructure.Repositories
             //result = result.ToList();
             */
 
-            var query = _context.Selfies.Include(x => x.Wookie).AsQueryable();
+            var query = _context.Selfies.Include(x => x.Wookie).Include(x => x.Picture).AsQueryable();
 
             if(wookieId > 0)
             {

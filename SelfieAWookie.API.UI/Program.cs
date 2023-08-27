@@ -6,6 +6,10 @@ using SelfieAWookie.Core.Infrastructure.Repositories;
 using SelfieAWookie.Core.Domain.Repositories;
 using SelfieAWookie.API.UI.ExtensionMethods;
 using Microsoft.AspNetCore.Identity;
+using SelfieAWookie.Core.Infrastructure.Loggers;
+using SelfieAWookie.API.UI.Middlewares;
+using MediatR;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +34,10 @@ builder.Services.AddDbContext<DataContext>(options =>
 {
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 });
+
+builder.Logging.AddProvider(new CustomLoggerProvider());
+//builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(Assembly.GetExecutingAssembly()));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -39,6 +47,8 @@ if (app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Staging"))
     app.UseSwaggerUI();
 }
 
+
+app.UseMiddleware<LogRequestMiddleware>();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

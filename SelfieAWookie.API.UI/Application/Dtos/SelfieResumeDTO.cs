@@ -7,6 +7,8 @@ namespace SelfieAWookie.API.UI.Application.Dtos
 
         public string? Wookie { get; set; }
 
+        public string? ImagePath { get; set; }
+
         public int NombreSelfieFromWookie { get; set; }
     }
 }
